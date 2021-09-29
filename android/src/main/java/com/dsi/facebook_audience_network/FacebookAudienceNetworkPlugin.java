@@ -1,6 +1,6 @@
 package com.dsi.facebook_audience_network;
 
-import android.content.Context;
+import android.app.Activity;
 import androidx.annotation.NonNull;
 
 import com.facebook.ads.*;
@@ -13,28 +13,21 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugin.platform.PlatformViewRegistry;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 
 /**
  * FacebookAudienceNetworkPlugin
  */
-public class FacebookAudienceNetworkPlugin implements MethodCallHandler, FlutterPlugin {
+public class FacebookAudienceNetworkPlugin implements MethodCallHandler, FlutterPlugin, ActivityAware {
 
-    private Context mContext = null;
-
-    private FacebookAudienceNetworkPlugin() {
-    }
-
-    private FacebookAudienceNetworkPlugin(Context context) {
-        this.mContext = context;
-    }
+    private Activity mActivity = null;
 
     /**
      * Plugin registration.
      */
     public static void registerWith(PluginRegistry.Registrar registrar) {
-        register(registrar.messenger(), registrar.context(), registrar.platformViewRegistry());
+        //register(registrar.messenger(), registrar.context(), registrar.platformViewRegistry());
     }
 
     @Override
@@ -49,8 +42,8 @@ public class FacebookAudienceNetworkPlugin implements MethodCallHandler, Flutter
     private boolean init(HashMap initValues) {
         final String testingId = (String) initValues.get("testingId");
 
-        if (mContext != null)
-            AudienceNetworkAds.initialize(mContext);
+        if (mActivity != null)
+            AudienceNetworkAds.initialize(mActivity.getApplicationContext());
 
         if (testingId != null) {
             AdSettings.addTestDevice(testingId);
@@ -60,7 +53,35 @@ public class FacebookAudienceNetworkPlugin implements MethodCallHandler, Flutter
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
-        register(binding.getBinaryMessenger(), binding.getApplicationContext(), binding.getPlatformViewRegistry());
+
+        // Main channel for initialization
+        final MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(),
+                FacebookConstants.MAIN_CHANNEL);
+        channel.setMethodCallHandler(this);
+
+        // Interstitial Ad channel
+        final MethodChannel interstitialAdChannel = new MethodChannel(binding.getBinaryMessenger(),
+                FacebookConstants.INTERSTITIAL_AD_CHANNEL);
+        interstitialAdChannel
+                .setMethodCallHandler(new FacebookInterstitialAdPlugin(binding.getApplicationContext(),
+                        interstitialAdChannel));
+
+        // Rewarded video Ad channel
+        final MethodChannel rewardedAdChannel = new MethodChannel(binding.getBinaryMessenger(),
+                FacebookConstants.REWARDED_VIDEO_CHANNEL);
+        rewardedAdChannel
+                .setMethodCallHandler(new FacebookRewardedVideoAdPlugin(binding.getApplicationContext(),
+                        rewardedAdChannel));
+
+        // Banner Ad PlatformView channel
+        binding.getPlatformViewRegistry().
+                registerViewFactory(FacebookConstants.BANNER_AD_CHANNEL,
+                        new FacebookBannerAdPlugin(binding.getBinaryMessenger()));
+
+        // Native Ad PlatformView channel
+        binding.getPlatformViewRegistry().
+                registerViewFactory(FacebookConstants.NATIVE_AD_CHANNEL,
+                        new FacebookNativeAdPlugin(binding.getBinaryMessenger()));
     }
 
     @Override
@@ -68,36 +89,24 @@ public class FacebookAudienceNetworkPlugin implements MethodCallHandler, Flutter
 
     }
 
-    private static void register(BinaryMessenger messenger, Context context, PlatformViewRegistry platformViewRegistry)
-    {
-        // Main channel for initialization
-        final MethodChannel channel = new MethodChannel(messenger,
-                FacebookConstants.MAIN_CHANNEL);
-        channel.setMethodCallHandler(new FacebookAudienceNetworkPlugin(context));
+    @Override
+    public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+        mActivity = binding.getActivity();
+    }
 
-        // Interstitial Ad channel
-        final MethodChannel interstitialAdChannel = new MethodChannel(messenger,
-                FacebookConstants.INTERSTITIAL_AD_CHANNEL);
-        interstitialAdChannel
-                .setMethodCallHandler(new FacebookInterstitialAdPlugin(context,
-                        interstitialAdChannel));
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        mActivity = null;
+    }
 
-        // Rewarded video Ad channel
-        final MethodChannel rewardedAdChannel = new MethodChannel(messenger,
-                FacebookConstants.REWARDED_VIDEO_CHANNEL);
-        rewardedAdChannel
-                .setMethodCallHandler(new FacebookRewardedVideoAdPlugin(context,
-                        rewardedAdChannel));
+    @Override
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+        mActivity = binding.getActivity();
+    }
 
-        // Banner Ad PlatformView channel
-        platformViewRegistry.
-                registerViewFactory(FacebookConstants.BANNER_AD_CHANNEL,
-                        new FacebookBannerAdPlugin(messenger));
-        
-        // Native Ad PlatformView channel
-        platformViewRegistry.
-                registerViewFactory(FacebookConstants.NATIVE_AD_CHANNEL,
-                        new FacebookNativeAdPlugin(messenger));
+    @Override
+    public void onDetachedFromActivity() {
+        mActivity = null;
     }
 }
 
