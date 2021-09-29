@@ -552,7 +552,7 @@ class FacebookAudienceNetworkNativeAdView: NSObject, FlutterPlatformView, FBNati
         regNativeAdView()
 
         let placement_id: String = nativeAd.placementID
-        let invalidated: Bool = nativeAd.isAdValid
+        let invalidated: Bool = !nativeAd.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,
@@ -566,7 +566,7 @@ class FacebookAudienceNetworkNativeAdView: NSObject, FlutterPlatformView, FBNati
 //        self.nativeAd = nativeAd
 //
 //        let placement_id: String = nativeAd.placementID
-//        let invalidated: Bool = nativeAd.isAdValid
+//        let invalidated: Bool = !nativeAd.isAdValid
 //        let arg: [String: Any] = [
 //            FANConstant.PLACEMENT_ID_ARG: placement_id,
 //            FANConstant.INVALIDATED_ARG: invalidated,
@@ -579,7 +579,7 @@ class FacebookAudienceNetworkNativeAdView: NSObject, FlutterPlatformView, FBNati
         print("NativeAd > nativeAdWillLogImpression")
 
         let placement_id: String = nativeAd.placementID
-        let invalidated: Bool = nativeAd.isAdValid
+        let invalidated: Bool = !nativeAd.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,
@@ -592,7 +592,7 @@ class FacebookAudienceNetworkNativeAdView: NSObject, FlutterPlatformView, FBNati
         print("NativeAd > nativeAd %s", error)
 
         let placement_id: String = nativeAd.placementID
-        let invalidated: Bool = nativeAd.isAdValid
+        let invalidated: Bool = !nativeAd.isAdValid
         let errorStr: String = error as? String ?? "";
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
@@ -607,7 +607,7 @@ class FacebookAudienceNetworkNativeAdView: NSObject, FlutterPlatformView, FBNati
         print("NativeAd > nativeAdDidClick")
         
         let placement_id: String = nativeAd.placementID
-        let invalidated: Bool = nativeAd.isAdValid
+        let invalidated: Bool = !nativeAd.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,

@@ -193,7 +193,7 @@ class FacebookAudienceNetworkNativeBannerAdView: NSObject, FlutterPlatformView, 
         regTemplate()
         
         let placement_id: String = nativeBannerAd.placementID
-        let invalidated: Bool = nativeBannerAd.isAdValid
+        let invalidated: Bool = !nativeBannerAd.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,
@@ -216,7 +216,7 @@ class FacebookAudienceNetworkNativeBannerAdView: NSObject, FlutterPlatformView, 
     func nativeBannerAdWillLogImpression(_ nativeBannerAd: FBNativeBannerAd) {
         print("NativeBannerAdView > nativeBannerAdWillLogImpression")
         let placement_id: String = nativeBannerAd.placementID
-        let invalidated: Bool = nativeBannerAd.isAdValid
+        let invalidated: Bool = !nativeBannerAd.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,
@@ -233,7 +233,7 @@ class FacebookAudienceNetworkNativeBannerAdView: NSObject, FlutterPlatformView, 
     func nativeBannerAd(_ nativeBannerAd: FBNativeBannerAd, didFailWithError error: Error) {
         print("NativeBannerAdView > nativeBannerAd")
         let placement_id: String = nativeBannerAd.placementID
-        let invalidated: Bool = nativeBannerAd.isAdValid
+        let invalidated: Bool = !nativeBannerAd.isAdValid
 //        let errorStr: String = error as! String
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
@@ -250,7 +250,7 @@ class FacebookAudienceNetworkNativeBannerAdView: NSObject, FlutterPlatformView, 
     func nativeBannerAdDidClick(_ nativeBannerAd: FBNativeBannerAd) {
         print("NativeBannerAdView > nativeBannerAdDidClick")
         let placement_id: String = nativeBannerAd.placementID
-        let invalidated: Bool = nativeBannerAd.isAdValid
+        let invalidated: Bool = !nativeBannerAd.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,

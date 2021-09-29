@@ -90,7 +90,7 @@ class FacebookAudienceNetworkInterstitialAdPlugin: NSObject, FBInterstitialAdDel
         print("InterstitialAdView > interstitialAdDidClick")
         
         let placement_id: String = interstitialAd.placementID
-        let invalidated: Bool = interstitialAd.isAdValid
+        let invalidated: Bool = !interstitialAd.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,
@@ -108,7 +108,7 @@ class FacebookAudienceNetworkInterstitialAdPlugin: NSObject, FBInterstitialAdDel
         print("InterstitialAdView > interstitialAdDidClose")
         //Add event for Interstitial dismissed.
         let placement_id: String = interstitialAd.placementID
-        let invalidated: Bool = interstitialAd.isAdValid
+        let invalidated: Bool = !interstitialAd.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,
@@ -134,7 +134,7 @@ class FacebookAudienceNetworkInterstitialAdPlugin: NSObject, FBInterstitialAdDel
         print("InterstitialAdView > interstitialAdDidLoad")
         
         let placement_id: String = interstitialAd.placementID
-        let invalidated: Bool = interstitialAd.isAdValid
+        let invalidated: Bool = !interstitialAd.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,
@@ -153,7 +153,7 @@ class FacebookAudienceNetworkInterstitialAdPlugin: NSObject, FBInterstitialAdDel
         print(error.localizedDescription)
         
         let placement_id: String = interstitialAd.placementID
-        let invalidated: Bool = interstitialAd.isAdValid
+        let invalidated: Bool = !interstitialAd.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,
@@ -170,7 +170,7 @@ class FacebookAudienceNetworkInterstitialAdPlugin: NSObject, FBInterstitialAdDel
         print("InterstitialAdView > interstitialAdWillLogImpression")
         
         let placement_id: String = interstitialAd.placementID
-        let invalidated: Bool = interstitialAd.isAdValid
+        let invalidated: Bool = !interstitialAd.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,

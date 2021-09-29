@@ -162,7 +162,7 @@ class FacebookAudienceNetworkBannerAdView: NSObject, FlutterPlatformView, FBAdVi
     func adViewDidClick(_ adView :FBAdView) {
         print("FAN > BannerAdView > adViewDidClick")
         let placement_id: String = adView.placementID
-        let invalidated: Bool = adView.isAdValid
+        let invalidated: Bool = !adView.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,
@@ -190,7 +190,7 @@ class FacebookAudienceNetworkBannerAdView: NSObject, FlutterPlatformView, FBAdVi
         regBannerAdViewTemplate()
         
         let placement_id: String = adView.placementID
-        let invalidated: Bool = adView.isAdValid
+        let invalidated: Bool = !adView.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,
@@ -206,7 +206,7 @@ class FacebookAudienceNetworkBannerAdView: NSObject, FlutterPlatformView, FBAdVi
     func  adView(_ adView :FBAdView, didFailWithError error: Error) {
         print("BannerAdView > adView")
         let placement_id: String = adView.placementID
-        let invalidated: Bool = adView.isAdValid
+        let invalidated: Bool = !adView.isAdValid
         let errorStr: String = error.localizedDescription
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
@@ -224,7 +224,7 @@ class FacebookAudienceNetworkBannerAdView: NSObject, FlutterPlatformView, FBAdVi
     func adViewWillLogImpression(_ adView :FBAdView) {
         print("BannerAdView > adViewWillLogImpression")
         let placement_id: String = adView.placementID
-        let invalidated: Bool = adView.isAdValid
+        let invalidated: Bool = !adView.isAdValid
         let arg: [String: Any] = [
             FANConstant.PLACEMENT_ID_ARG: placement_id,
             FANConstant.INVALIDATED_ARG: invalidated,
