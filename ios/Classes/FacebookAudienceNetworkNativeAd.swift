@@ -56,7 +56,7 @@ class FacebookAudienceNetworkNativeAdView: NSObject, FlutterPlatformView, FBNati
     var nativeAdLayout: FacebookAudienceNetworkNativeAdLayout!
     // custom
     var adView: UIView!
-    var adIconView: FBAdIconView!
+    var adIconView: FBMediaView!
     var adMediaView: FBMediaView!
     var adCoverView: UIView!
     var adTitleLabel: UILabel!
@@ -321,7 +321,7 @@ class FacebookAudienceNetworkNativeAdView: NSObject, FlutterPlatformView, FBNati
         self.adView.backgroundColor = self.nativeAdViewAttributes.backgroundColor
 
         // Icon
-        self.adIconView = FBAdIconView.init(frame: nativeAdLayout.adIconRect)
+        self.adIconView = FBMediaView.init(frame: nativeAdLayout.adIconRect)
         self.adIconView.layer.cornerRadius = nativeAdLayout.adIconRect.width / 2
         self.adView.addSubview(self.adIconView)
 
@@ -492,7 +492,7 @@ class FacebookAudienceNetworkNativeAdView: NSObject, FlutterPlatformView, FBNati
         self.adView.addSubview(self.adOptionsView)
 
         // Icon
-        self.adIconView = FBAdIconView.init(frame: nativeAdLayout.adIconRect)
+        self.adIconView = FBMediaView.init(frame: nativeAdLayout.adIconRect)
         self.adIconView.layer.cornerRadius = nativeAdLayout.adIconRect.width / 2
         self.adView.addSubview(self.adIconView)
 
