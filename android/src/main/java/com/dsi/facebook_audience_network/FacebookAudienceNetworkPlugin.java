@@ -21,7 +21,10 @@ import io.flutter.plugin.platform.PlatformViewRegistry;
  */
 public class FacebookAudienceNetworkPlugin implements MethodCallHandler, FlutterPlugin {
 
-    private final Context mContext;
+    private Context mContext = null;
+
+    private FacebookAudienceNetworkPlugin() {
+    }
 
     private FacebookAudienceNetworkPlugin(Context context) {
         this.mContext = context;
@@ -46,7 +49,8 @@ public class FacebookAudienceNetworkPlugin implements MethodCallHandler, Flutter
     private boolean init(HashMap initValues) {
         final String testingId = (String) initValues.get("testingId");
 
-        AudienceNetworkAds.initialize(mContext);
+        if (mContext != null)
+            AudienceNetworkAds.initialize(mContext);
 
         if (testingId != null) {
             AdSettings.addTestDevice(testingId);
