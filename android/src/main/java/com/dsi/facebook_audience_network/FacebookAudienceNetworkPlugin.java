@@ -23,11 +23,45 @@ public class FacebookAudienceNetworkPlugin implements MethodCallHandler, Flutter
 
     private Activity mActivity = null;
 
+    private FacebookAudienceNetworkPlugin(Activity activity) {
+        this.mActivity = activity;
+    }
+
     /**
      * Plugin registration.
      */
+     //V1 Embedding Support
     public static void registerWith(PluginRegistry.Registrar registrar) {
-        //register(registrar.messenger(), registrar.context(), registrar.platformViewRegistry());
+        // Main channel for initialization
+        final MethodChannel channel = new MethodChannel(registrar.messenger(),
+                FacebookConstants.MAIN_CHANNEL);
+        channel.setMethodCallHandler(new FacebookAudienceNetworkPlugin(registrar.activity()));
+
+        // Interstitial Ad channel
+        final MethodChannel interstitialAdChannel = new MethodChannel(registrar.messenger(),
+                FacebookConstants.INTERSTITIAL_AD_CHANNEL);
+        interstitialAdChannel
+                .setMethodCallHandler(new FacebookInterstitialAdPlugin(registrar.context(),
+                        interstitialAdChannel));
+
+        // Rewarded video Ad channel
+        final MethodChannel rewardedAdChannel = new MethodChannel(registrar.messenger(),
+                FacebookConstants.REWARDED_VIDEO_CHANNEL);
+        rewardedAdChannel
+                .setMethodCallHandler(new FacebookRewardedVideoAdPlugin(registrar.context(),
+                        rewardedAdChannel));
+
+        // Banner Ad PlatformView channel
+        registrar.
+                platformViewRegistry().
+                registerViewFactory(FacebookConstants.BANNER_AD_CHANNEL,
+                        new FacebookBannerAdPlugin(registrar.messenger()));
+        
+        // Native Ad PlatformView channel
+        registrar.
+                platformViewRegistry().
+                registerViewFactory(FacebookConstants.NATIVE_AD_CHANNEL,
+                        new FacebookNativeAdPlugin(registrar.messenger()));
     }
 
     @Override
@@ -86,7 +120,7 @@ public class FacebookAudienceNetworkPlugin implements MethodCallHandler, Flutter
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
-
+        mActivity = null;
     }
 
     @Override
@@ -96,6 +130,7 @@ public class FacebookAudienceNetworkPlugin implements MethodCallHandler, Flutter
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
+
         mActivity = null;
     }
 
