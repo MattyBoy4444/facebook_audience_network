@@ -88,51 +88,49 @@ class _FacebookBannerAdState extends State<FacebookBannerAd> with AutomaticKeepA
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        int width = constraints.hasBoundedWidth ? constraints.maxWidth.truncate() : widget.bannerSize.width;
-        if (defaultTargetPlatform == TargetPlatform.android) {
-          return Container(
-            height: containerHeight,
-            width: width.toDouble(),
-            color: Colors.transparent,
-            child: AndroidView(
-              viewType: BANNER_AD_CHANNEL,
-              onPlatformViewCreated: _onBannerAdViewCreated,
-              creationParams: <String, dynamic>{
-                "id": widget.placementId,
-                "width": width,
-                "height": widget.bannerSize.height,
-              },
-              creationParamsCodec: StandardMessageCodec(),
-            ),
-          );
-        } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-          return Container(
-            height: containerHeight,
-            width: width.toDouble(),
-            color: Colors.transparent,
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return Container(
+        height: containerHeight,
+        color: Colors.transparent,
+        child: AndroidView(
+          viewType: BANNER_AD_CHANNEL,
+          onPlatformViewCreated: _onBannerAdViewCreated,
+          creationParams: <String, dynamic>{
+            "id": widget.placementId,
+            "width": widget.bannerSize.width,
+            "height": widget.bannerSize.height,
+          },
+          creationParamsCodec: StandardMessageCodec(),
+        ),
+      );
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      return Container(
+        height: containerHeight,
+        color: Colors.transparent,
+        child: Container(
+          width: widget.bannerSize.width.toDouble(),
+          child: Center(
             child: UiKitView(
               viewType: BANNER_AD_CHANNEL,
               onPlatformViewCreated: _onBannerAdViewCreated,
               creationParams: <String, dynamic>{
                 "id": widget.placementId,
-                "width": width,
+                "width": widget.bannerSize.width,
                 "height": widget.bannerSize.height,
               },
               creationParamsCodec: StandardMessageCodec(),
             ),
-          );
-        } else {
-          return Container(
-            height: widget.bannerSize.height <= -1 ? double.infinity : widget.bannerSize.height.toDouble(),
-            child: Center(
-              child: Text("Banner Ads for this platform is currently not supported"),
-            ),
-          );
-        }
-      },
-    );
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        height: widget.bannerSize.height <= -1 ? double.infinity : widget.bannerSize.height.toDouble(),
+        child: Center(
+          child: Text("Banner Ads for this platform is currently not supported"),
+        ),
+      );
+    }
   }
 
   void _onBannerAdViewCreated(int id) async {
