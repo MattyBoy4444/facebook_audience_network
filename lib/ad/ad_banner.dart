@@ -90,11 +90,11 @@ class _FacebookBannerAdState extends State<FacebookBannerAd> with AutomaticKeepA
     super.build(context);
     return LayoutBuilder(
       builder: (context, constraints) {
-        double width = constraints.hasBoundedWidth ? constraints.maxWidth : widget.bannerSize.width.toDouble();
+        int width = constraints.hasBoundedWidth ? constraints.maxWidth.truncate() : widget.bannerSize.width;
         if (defaultTargetPlatform == TargetPlatform.android) {
           return Container(
             height: containerHeight,
-            width: width,
+            width: width.toDouble(),
             color: Colors.transparent,
             child: AndroidView(
               viewType: BANNER_AD_CHANNEL,
@@ -110,7 +110,7 @@ class _FacebookBannerAdState extends State<FacebookBannerAd> with AutomaticKeepA
         } else if (defaultTargetPlatform == TargetPlatform.iOS) {
           return Container(
             height: containerHeight,
-            width: width,
+            width: width.toDouble(),
             color: Colors.transparent,
             child: UiKitView(
               viewType: BANNER_AD_CHANNEL,
