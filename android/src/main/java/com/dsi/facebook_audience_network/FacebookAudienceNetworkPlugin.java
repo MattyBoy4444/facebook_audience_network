@@ -1,12 +1,15 @@
 package com.dsi.facebook_audience_network;
 
 import android.app.Activity;
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.facebook.ads.*;
 
 import java.util.HashMap;
 
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -15,6 +18,7 @@ import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.platform.PlatformViewRegistry;
 
 /**
  * FacebookAudienceNetworkPlugin
@@ -23,16 +27,22 @@ public class FacebookAudienceNetworkPlugin implements MethodCallHandler, Flutter
 
     private Activity mActivity = null;
 
+    public FacebookAudienceNetworkPlugin() {}
+
+    private FacebookAudienceNetworkPlugin(Activity activity) {
+        this.mActivity = activity;
+    }
+
     /**
      * Plugin registration.
      */
     public static void registerWith(PluginRegistry.Registrar registrar) {
-        //V1 Embedding removed
+        registerWithInternal(new FacebookAudienceNetworkPlugin(registrar.activity()), registrar.messenger(),
+                registrar.context(), registrar.platformViewRegistry() );
     }
 
     @Override
     public void onMethodCall(MethodCall call, @NonNull Result result) {
-
         if (call.method.equals(FacebookConstants.INIT_METHOD))
             result.success(init((HashMap) call.arguments));
         else
@@ -53,35 +63,40 @@ public class FacebookAudienceNetworkPlugin implements MethodCallHandler, Flutter
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
+        registerWithInternal(this, binding.getBinaryMessenger(),
+                binding.getApplicationContext(), binding.getPlatformViewRegistry());
+    }
 
+    private static void registerWithInternal(MethodCallHandler plugin, BinaryMessenger binaryMessenger, Context context, PlatformViewRegistry platformViewRegistry)
+    {
         // Main channel for initialization
-        final MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(),
+        final MethodChannel channel = new MethodChannel(binaryMessenger,
                 FacebookConstants.MAIN_CHANNEL);
-        channel.setMethodCallHandler(this);
+        channel.setMethodCallHandler(plugin);
 
         // Interstitial Ad channel
-        final MethodChannel interstitialAdChannel = new MethodChannel(binding.getBinaryMessenger(),
+        final MethodChannel interstitialAdChannel = new MethodChannel(binaryMessenger,
                 FacebookConstants.INTERSTITIAL_AD_CHANNEL);
         interstitialAdChannel
-                .setMethodCallHandler(new FacebookInterstitialAdPlugin(binding.getApplicationContext(),
+                .setMethodCallHandler(new FacebookInterstitialAdPlugin(context,
                         interstitialAdChannel));
 
         // Rewarded video Ad channel
-        final MethodChannel rewardedAdChannel = new MethodChannel(binding.getBinaryMessenger(),
+        final MethodChannel rewardedAdChannel = new MethodChannel(binaryMessenger,
                 FacebookConstants.REWARDED_VIDEO_CHANNEL);
         rewardedAdChannel
-                .setMethodCallHandler(new FacebookRewardedVideoAdPlugin(binding.getApplicationContext(),
+                .setMethodCallHandler(new FacebookRewardedVideoAdPlugin(context,
                         rewardedAdChannel));
 
         // Banner Ad PlatformView channel
-        binding.getPlatformViewRegistry().
+        platformViewRegistry.
                 registerViewFactory(FacebookConstants.BANNER_AD_CHANNEL,
-                        new FacebookBannerAdPlugin(binding.getBinaryMessenger()));
+                        new FacebookBannerAdPlugin(binaryMessenger));
 
         // Native Ad PlatformView channel
-        binding.getPlatformViewRegistry().
+        platformViewRegistry.
                 registerViewFactory(FacebookConstants.NATIVE_AD_CHANNEL,
-                        new FacebookNativeAdPlugin(binding.getBinaryMessenger()));
+                        new FacebookNativeAdPlugin(binaryMessenger));
     }
 
     @Override
